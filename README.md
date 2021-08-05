@@ -1,5 +1,7 @@
 # GUI Compass Fabric
 
+This is mostly a Fabric port of [GUI Compass](https://www.curseforge.com/minecraft/mc-mods/gui-compass)
+
 ## Setup
 
 GUI Compass is a minimalistic configurable client-side mod which shows the direction and coordinates in the GUI with a compass in the inventory (optional). By default the compass is positioned in the bottom left.
