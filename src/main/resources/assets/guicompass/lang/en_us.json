@@ -2,9 +2,13 @@
     "guicompass.options": "Gui Compass Options",
 
     "option.guicompass.must_have_compass_in_inventory": "Require Compass",
+    "option.guicompass.must_have_compass_in_inventory.tooltip": "When enabled, will only show the GUI compass when a compass is present in the inventory.",
     "option.guicompass.must_have_compass_in_inventory.true": "Enabled",
     "option.guicompass.must_have_compass_in_inventory.false": "Disabled",
     "option.guicompass.rgb_r": "Text Color R: %d",
+    "option.guicompass.rgb_r.tooltip": "The red RGB value for the compass text.",
     "option.guicompass.rgb_g": "Text Color G: %d",
-    "option.guicompass.rgb_b": "Text Color B: %d"
+    "option.guicompass.rgb_g.tooltip": "The green RGB value for the compass text.",
+    "option.guicompass.rgb_b": "Text Color B: %d",
+    "option.guicompass.rgb_b.tooltip": "The blue RGB value for the compass text."
 }
