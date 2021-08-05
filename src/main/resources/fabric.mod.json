@@ -1,0 +1,39 @@
+{
+  "schemaVersion": 1,
+  "id": "guicompass",
+  "version": "1.7",
+  "environment": "client",
+  "icon": "assets/guicompass/icon.png",
+  "name": "GUI Compass",
+  "description": "GUI Compass is a minimalistic configurable client-side mod which shows the direction and coordinates in the GUI with a compass in the inventory.",
+  "authors": [
+    "ThibmoRozier"
+  ],
+  "contact": {
+    "homepage": "https://fabricmc.net/",
+    "sources": "https://github.com/thibmo/GUI-Compass-Fabric"
+  },
+
+  "entrypoints": {
+    "client": [
+      "net.thibmorozier.guicompass.GuiCompass"
+    ],
+    "modmenu": [
+      "net.thibmorozier.guicompass.config.modmenu.ModMenuIntegration"
+    ]
+  },
+  "mixins": [
+    "guicompass.mixins.json"
+  ],
+
+  "depends": {
+    "fabricloader": ">=0.11.3",
+    "fabric": "*",
+    "minecraft": "1.17.x",
+    "java": ">=16"
+  },
+  "suggests": {
+    "modmenu": "*",
+    "guiclock": "*"
+  }
+}

@@ -1,0 +1,10 @@
+{
+    "guicompass.options": "Gui Compass Options",
+
+    "option.guicompass.must_have_compass_in_inventory": "Require Compass",
+    "option.guicompass.must_have_compass_in_inventory.true": "Enabled",
+    "option.guicompass.must_have_compass_in_inventory.false": "Disabled",
+    "option.guicompass.rgb_r": "Text Color R: %d",
+    "option.guicompass.rgb_g": "Text Color G: %d",
+    "option.guicompass.rgb_b": "Text Color B: %d"
+}
