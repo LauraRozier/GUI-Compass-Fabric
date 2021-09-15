@@ -1,0 +1,27 @@
+{
+    "guicompass.options": "Gui Compass Opties",
+
+    "option.guicompass.must_have_compass_in_inventory": "Kompas Benodigd",
+    "option.guicompass.must_have_compass_in_inventory.tooltip": "Wanneer deze optie actief is, zul je enkel de kompas tekst zien wanneer je een kompas in je inventaris hebt.",
+    "option.guicompass.must_have_compass_in_inventory.true": "Ingeschakeld",
+    "option.guicompass.must_have_compass_in_inventory.false": "Uitgeschakeld",
+
+    "option.guicompass.rgb_r": "Tekst Kleur R: %d",
+    "option.guicompass.rgb_r.tooltip": "De rode RGB waarde voor de kompas tekst.",
+    "option.guicompass.rgb_g": "Tekst Kleur G: %d",
+    "option.guicompass.rgb_g.tooltip": "De groene RGB waarde voor de kompas tekst.",
+    "option.guicompass.rgb_b": "Tekst Kleur B: %d",
+    "option.guicompass.rgb_b.tooltip": "De blauwe RGB waarde voor de kompas tekst.",
+
+    "option.guicompass.position": "Text Positie",
+    "option.guicompass.position.tooltip": "De locatie voor de kompas tekst op het scherm.",
+    "option.guicompass.position.top_left": "Top-Links",
+    "option.guicompass.position.top_center": "Top-Midden",
+    "option.guicompass.position.top_right": "Top-Rechts",
+    "option.guicompass.position.center_left": "Midden-Links",
+    "option.guicompass.position.center_center": "Midden-Midden",
+    "option.guicompass.position.center_right": "Midden-Rechts",
+    "option.guicompass.position.bottom_left": "Bodem-Links",
+    "option.guicompass.position.bottom_center": "Bodem-Midden",
+    "option.guicompass.position.bottom_right": "Bodem-Rechts"
+}
