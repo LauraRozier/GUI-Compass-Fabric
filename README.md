@@ -1,5 +1,7 @@
 # GUI Compass Fabric
 
+https://www.curseforge.com/minecraft/mc-mods/gui-compass-fabric
+
 This is mostly a Fabric port of [GUI Compass](https://www.curseforge.com/minecraft/mc-mods/gui-compass)
 
 ## Setup

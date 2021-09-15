@@ -11,7 +11,8 @@
   ],
   "contact": {
     "homepage": "https://www.curseforge.com/minecraft/mc-mods/gui-compass-fabric",
-    "sources": "https://github.com/thibmo/GUI-Compass-Fabric"
+    "sources": "https://github.com/thibmo/GUI-Compass-Fabric",
+    "issues": "https://github.com/thibmo/GUI-Compass-Fabric/issues"
   },
 
   "entrypoints": {
