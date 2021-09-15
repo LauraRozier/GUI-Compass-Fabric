@@ -15,7 +15,8 @@ import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.Items;
 import net.minecraft.util.math.MathHelper;
-import net.thibmorozier.guicompass.config.Config;
+import net.thibmorozier.guicompass.config.CompassConfig;
+import net.thibmorozier.guicompass.util.CompassVector2i;
 
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.gen.Accessor;
@@ -46,7 +47,7 @@ public abstract class GuiCompassMixin {
 		MinecraftClient client = getClient();
 		PlayerEntity playerEntity = client.player;
 
-		if (Config.MUST_HAVE_COMPASS_IN_INVENTORY.getValue())
+		if (CompassConfig.MUST_HAVE_COMPASS_IN_INVENTORY.getValue())
 			if (!playerEntity.getInventory().contains(Items.COMPASS.getDefaultStack()))
 				return;
 
@@ -60,16 +61,33 @@ public abstract class GuiCompassMixin {
 
 		String compassStr = String.format("%s: %d, %d, %d", direction[facing], x, y, z);
 
-		int strWidth = textRenderer.getWidth(compassStr);
-        int coordX   = 3;
-        int coordY   = client.getWindow().getScaledHeight() - 36;
+		int textWidth = textRenderer.getWidth(compassStr);
+		CompassVector2i screenPos = getCompassScreenPos(client, textWidth);
 
-		Color foreColor = new Color(Config.RGB_R.getValue(), Config.RGB_G.getValue(), Config.RGB_B.getValue(), 255);
+		Color foreColor = new Color(CompassConfig.RGB_R.getValue(), CompassConfig.RGB_G.getValue(), CompassConfig.RGB_B.getValue(), 255);
 
 		RenderSystem.enableBlend();
 		RenderSystem.defaultBlendFunc();
-		DrawableHelper.fill(matrices, coordX - 2, coordY - 2, coordX + strWidth + 2, coordY + 11, client.options.getTextBackgroundColor(0));
-		textRenderer.drawWithShadow(matrices, compassStr, (float)coordX, (float)coordY, foreColor.getRGB());
+		DrawableHelper.fill(matrices, screenPos.getX() - 2, screenPos.getY() - 2, screenPos.getX() + textWidth + 2, screenPos.getY() + 11, client.options.getTextBackgroundColor(0));
+		textRenderer.drawWithShadow(matrices, compassStr, (float)screenPos.getX(), (float)screenPos.getY(), foreColor.getRGB());
 		RenderSystem.disableBlend();
+	}
+
+	private CompassVector2i getCompassScreenPos(MinecraftClient client, int textWidth) {
+		switch (CompassConfig.POSITION.getValue()) {
+			case TOP_LEFT:      return new CompassVector2i(3, 2);
+			case TOP_CENTER:    return new CompassVector2i((client.getWindow().getScaledWidth() / 2) - (textWidth / 2), 2);
+			case TOP_RIGHT:     return new CompassVector2i(client.getWindow().getScaledWidth() - (textWidth + 3), 2);
+
+			case CENTER_LEFT:   return new CompassVector2i(3, (client.getWindow().getScaledHeight() / 2) - 5);
+			case CENTER_CENTER: return new CompassVector2i((client.getWindow().getScaledWidth() / 2) - (textWidth / 2), (client.getWindow().getScaledHeight() / 2) - 5);
+			case CENTER_RIGHT:  return new CompassVector2i(client.getWindow().getScaledWidth() - (textWidth + 3), (client.getWindow().getScaledHeight() / 2) - 5);
+
+			case BOTTOM_LEFT:   return new CompassVector2i(3, client.getWindow().getScaledHeight() - 36);
+			case BOTTOM_CENTER: return new CompassVector2i((client.getWindow().getScaledWidth() / 2) - (textWidth / 2), client.getWindow().getScaledHeight() - 36);
+			case BOTTOM_RIGHT:  return new CompassVector2i(client.getWindow().getScaledWidth() - (textWidth + 3), client.getWindow().getScaledHeight() - 36);
+
+			default:            return new CompassVector2i(3, client.getWindow().getScaledHeight() - 36);
+		}
 	}
 }

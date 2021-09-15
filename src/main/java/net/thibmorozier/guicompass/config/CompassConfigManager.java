@@ -3,23 +3,22 @@ package net.thibmorozier.guicompass.config;
 import java.io.*;
 import java.lang.reflect.Field;
 import java.lang.reflect.Modifier;
-import java.lang.reflect.ParameterizedType;
-import java.lang.reflect.Type;
 import java.util.Locale;
 import java.util.stream.Collectors;
 
 import com.google.common.collect.Sets;
 import com.google.gson.*;
-import com.terraformersmc.modmenu.config.option.EnumConfigOption;
 import com.terraformersmc.modmenu.config.option.StringSetConfigOption;
 
 import net.fabricmc.loader.api.FabricLoader;
 import net.thibmorozier.guicompass.GuiCompass;
-import net.thibmorozier.guicompass.config.option.BooleanConfigOption;
-import net.thibmorozier.guicompass.config.option.IntegerConfigOption;
-import net.thibmorozier.guicompass.config.option.ThibConfigOptionStorage;
+import net.thibmorozier.guicompass.config.enums.CompassPosEnum;
+import net.thibmorozier.guicompass.config.option.CompassBooleanConfigOption;
+import net.thibmorozier.guicompass.config.option.CompassPosEnumConfigOption;
+import net.thibmorozier.guicompass.config.option.CompassIntegerConfigOption;
+import net.thibmorozier.guicompass.config.option.CompassConfigOptionStorage;
 
-public class ConfigManager {
+public class CompassConfigManager {
     public static final Gson GSON = new GsonBuilder().setFieldNamingPolicy(FieldNamingPolicy.LOWER_CASE_WITH_UNDERSCORES).setPrettyPrinting().create();
     private static File file;
 
@@ -45,49 +44,45 @@ public class ConfigManager {
 				BufferedReader br = new BufferedReader(new FileReader(file));
 				JsonObject json = new JsonParser().parse(br).getAsJsonObject();
 
-				for (Field field : Config.class.getDeclaredFields()) {
+				for (Field field : CompassConfig.class.getDeclaredFields()) {
 					if (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers())) {
 						if (StringSetConfigOption.class.isAssignableFrom(field.getType())) {
 							JsonArray jsonArray = json.getAsJsonArray(field.getName().toLowerCase(Locale.ROOT));
 
 							if (jsonArray != null) {
 								StringSetConfigOption option = (StringSetConfigOption)field.get(null);
-								ThibConfigOptionStorage.setStringSet(option.getKey(), Sets.newHashSet(jsonArray).stream().map(JsonElement::getAsString).collect(Collectors.toSet()));
+								CompassConfigOptionStorage.setStringSet(option.getKey(), Sets.newHashSet(jsonArray).stream().map(JsonElement::getAsString).collect(Collectors.toSet()));
 							}
-						} else if (IntegerConfigOption.class.isAssignableFrom(field.getType())) {
+						} else if (CompassIntegerConfigOption.class.isAssignableFrom(field.getType())) {
 							JsonPrimitive jsonPrimitive = json.getAsJsonPrimitive(field.getName().toLowerCase(Locale.ROOT));
 
 							if (jsonPrimitive != null && jsonPrimitive.isNumber()) {
-								IntegerConfigOption option = (IntegerConfigOption)field.get(null);
-								ThibConfigOptionStorage.setInteger(option.getKey(), jsonPrimitive.getAsInt());
+								CompassIntegerConfigOption option = (CompassIntegerConfigOption)field.get(null);
+								CompassConfigOptionStorage.setInteger(option.getKey(), jsonPrimitive.getAsInt());
 							}
-						} else if (BooleanConfigOption.class.isAssignableFrom(field.getType())) {
+						} else if (CompassBooleanConfigOption.class.isAssignableFrom(field.getType())) {
 							JsonPrimitive jsonPrimitive = json.getAsJsonPrimitive(field.getName().toLowerCase(Locale.ROOT));
 
 							if (jsonPrimitive != null && jsonPrimitive.isBoolean()) {
-								BooleanConfigOption option = (BooleanConfigOption)field.get(null);
-								ThibConfigOptionStorage.setBoolean(option.getKey(), jsonPrimitive.getAsBoolean());
+								CompassBooleanConfigOption option = (CompassBooleanConfigOption)field.get(null);
+								CompassConfigOptionStorage.setBoolean(option.getKey(), jsonPrimitive.getAsBoolean());
 							}
-						} else if (EnumConfigOption.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType) {
+						} else if (CompassPosEnumConfigOption.class.isAssignableFrom(field.getType())) {
 							JsonPrimitive jsonPrimitive = json.getAsJsonPrimitive(field.getName().toLowerCase(Locale.ROOT));
 
 							if (jsonPrimitive != null && jsonPrimitive.isString()) {
-								Type generic = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
+								CompassPosEnumConfigOption option = (CompassPosEnumConfigOption) field.get(null);
+								CompassPosEnum found = null;
 
-								if (generic instanceof Class<?>) {
-									EnumConfigOption<?> option = (EnumConfigOption<?>)field.get(null);
-									Enum<?> found = null;
-
-									for (Enum<?> value : ((Class<Enum<?>>) generic).getEnumConstants()) {
-										if (value.name().toLowerCase(Locale.ROOT).equals(jsonPrimitive.getAsString())) {
-											found = value;
-											break;
-										}
+								for (CompassPosEnum value : CompassPosEnum.values()) {
+									if (value.name().toLowerCase(Locale.ROOT).equals(jsonPrimitive.getAsString())) {
+										found = value;
+										break;
 									}
-
-									if (found != null)
-										ThibConfigOptionStorage.setEnumTypeless(option.getKey(), found);
 								}
+
+								if (found != null)
+									CompassConfigOptionStorage.setCompassPosEnum(option.getKey(), found);
 							}
 						}
 					}
@@ -101,30 +96,25 @@ public class ConfigManager {
 
 	public static void save() {
 		prepareConfigFile();
-
 		JsonObject config = new JsonObject();
 
 		try {
-			for (Field field : Config.class.getDeclaredFields()) {
+			for (Field field : CompassConfig.class.getDeclaredFields()) {
 				if (Modifier.isStatic(field.getModifiers()) && Modifier.isFinal(field.getModifiers())) {
-					if (BooleanConfigOption.class.isAssignableFrom(field.getType())) {
-						BooleanConfigOption option = (BooleanConfigOption)field.get(null);
-						config.addProperty(field.getName().toLowerCase(Locale.ROOT), ThibConfigOptionStorage.getBoolean(option.getKey()));
-					} else if (IntegerConfigOption.class.isAssignableFrom(field.getType())) {
-						IntegerConfigOption option = (IntegerConfigOption)field.get(null);
-						config.addProperty(field.getName().toLowerCase(Locale.ROOT), ThibConfigOptionStorage.getInteger(option.getKey()));
+					if (CompassBooleanConfigOption.class.isAssignableFrom(field.getType())) {
+						CompassBooleanConfigOption option = (CompassBooleanConfigOption)field.get(null);
+						config.addProperty(field.getName().toLowerCase(Locale.ROOT), CompassConfigOptionStorage.getBoolean(option.getKey()));
+					} else if (CompassIntegerConfigOption.class.isAssignableFrom(field.getType())) {
+						CompassIntegerConfigOption option = (CompassIntegerConfigOption)field.get(null);
+						config.addProperty(field.getName().toLowerCase(Locale.ROOT), CompassConfigOptionStorage.getInteger(option.getKey()));
 					} else if (StringSetConfigOption.class.isAssignableFrom(field.getType())) {
 						StringSetConfigOption option = (StringSetConfigOption)field.get(null);
 						JsonArray array = new JsonArray();
-						ThibConfigOptionStorage.getStringSet(option.getKey()).forEach(array::add);
+						CompassConfigOptionStorage.getStringSet(option.getKey()).forEach(array::add);
 						config.add(field.getName().toLowerCase(Locale.ROOT), array);
-					} else if (EnumConfigOption.class.isAssignableFrom(field.getType()) && field.getGenericType() instanceof ParameterizedType) {
-						Type generic = ((ParameterizedType) field.getGenericType()).getActualTypeArguments()[0];
-
-						if (generic instanceof Class<?>) {
-							EnumConfigOption<?> option = (EnumConfigOption<?>)field.get(null);
-							config.addProperty(field.getName().toLowerCase(Locale.ROOT), ThibConfigOptionStorage.getEnumTypeless(option.getKey(), (Class<Enum<?>>)generic).name().toLowerCase(Locale.ROOT));
-						}
+					} else if (CompassPosEnumConfigOption.class.isAssignableFrom(field.getType())) {
+						CompassPosEnumConfigOption option = (CompassPosEnumConfigOption) field.get(null);
+						config.addProperty(field.getName().toLowerCase(Locale.ROOT), CompassConfigOptionStorage.getCompassPosEnum(option.getKey()).name().toLowerCase(Locale.ROOT));
 					}
 				}
 			}

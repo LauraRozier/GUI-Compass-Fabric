@@ -9,26 +9,26 @@ import net.minecraft.client.option.CyclingOption;
 import net.minecraft.text.OrderedText;
 import net.minecraft.text.Text;
 import net.minecraft.text.TranslatableText;
-import net.thibmorozier.guicompass.util.TranslationUtil;
+import net.thibmorozier.guicompass.util.CompassTranslationUtil;
 
-public class BooleanConfigOption implements OptionConvertable {
+public class CompassBooleanConfigOption implements OptionConvertable {
 	private final String key, translationKey;
 	private final Text toolTip;
 	private final boolean defaultValue;
 	private final Text enabledText;
 	private final Text disabledText;
 
-    public BooleanConfigOption(String key, boolean defaultValue, String enabledKey, String disabledKey) {
-		ThibConfigOptionStorage.setBoolean(key, defaultValue);
+    public CompassBooleanConfigOption(String key, boolean defaultValue, String enabledKey, String disabledKey) {
+		CompassConfigOptionStorage.setBoolean(key, defaultValue);
 		this.key = key;
-		this.translationKey = TranslationUtil.translationKeyOf("option", key);
+		this.translationKey = CompassTranslationUtil.translationKeyOf("option", key);
 		this.toolTip = new TranslatableText(translationKey + ".tooltip");
 		this.defaultValue = defaultValue;
 		this.enabledText = new TranslatableText(translationKey + "." + enabledKey);
 		this.disabledText = new TranslatableText(translationKey + "." + disabledKey);
 	}
 
-	public BooleanConfigOption(String key, boolean defaultValue) {
+	public CompassBooleanConfigOption(String key, boolean defaultValue) {
 		this(key, defaultValue, "true", "false");
 	}
 
@@ -37,15 +37,15 @@ public class BooleanConfigOption implements OptionConvertable {
 	}
 
 	public boolean getValue() {
-		return ThibConfigOptionStorage.getBoolean(key);
+		return CompassConfigOptionStorage.getBoolean(key);
 	}
 
 	public void setValue(boolean value) {
-		ThibConfigOptionStorage.setBoolean(key, value);
+		CompassConfigOptionStorage.setBoolean(key, value);
 	}
 
 	public void toggleValue() {
-		ThibConfigOptionStorage.toggleBoolean(key);
+		CompassConfigOptionStorage.toggleBoolean(key);
 	}
 
 	public boolean getDefaultValue() {
@@ -60,16 +60,16 @@ public class BooleanConfigOption implements OptionConvertable {
 	public CyclingOption<Boolean> asOption() {
 		if (enabledText != null && disabledText != null)
 			return CyclingOption.create(translationKey, enabledText, disabledText,
-				ignored -> ThibConfigOptionStorage.getBoolean(key),
-				(ignored, option, value) -> ThibConfigOptionStorage.setBoolean(key, value)
+				ignored -> CompassConfigOptionStorage.getBoolean(key),
+				(ignored, option, value) -> CompassConfigOptionStorage.setBoolean(key, value)
 			).tooltip((client) -> {
 				List<OrderedText> list = client.textRenderer.wrapLines(toolTip, 200);
 				return (value) -> { return list; };
 			});
 
 		return CyclingOption.create(translationKey, toolTip,
-			ignored -> ThibConfigOptionStorage.getBoolean(key),
-			(ignored, option, value) -> ThibConfigOptionStorage.setBoolean(key, value)
+			ignored -> CompassConfigOptionStorage.getBoolean(key),
+			(ignored, option, value) -> CompassConfigOptionStorage.setBoolean(key, value)
 		);
 	}
 }
